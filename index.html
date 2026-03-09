@@ -31,7 +31,7 @@
         .header {
             background: white;
             border-bottom: 1px solid #e5e5e5;
-            padding: 12px 16px;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -40,6 +40,7 @@
             z-index: 10;
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.9);
+            flex-wrap: wrap;
         }
         
         .logo {
@@ -74,6 +75,36 @@
         .tab.active {
             color: #000;
             border-bottom-color: #000;
+        }
+        
+        /* Таймер до каникул */
+        .timer {
+            background: #f5f5f5;
+            padding: 6px 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 0;
+            width: 100%;
+            justify-content: center;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .timer i {
+            color: #000;
+            font-size: 14px;
+        }
+        
+        .timer span {
+            font-weight: 500;
+        }
+        
+        .timer .days {
+            background: #000;
+            color: white;
+            padding: 2px 8px;
+            margin-left: 4px;
         }
         
         /* Основной контент */
@@ -753,6 +784,13 @@
     </style>
 </head>
 <body>
+    <!-- Таймер до каникул -->
+    <div class="timer" id="timer">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>до каникул</span>
+        <span class="days" id="daysCount">19 дней</span>
+    </div>
+
     <!-- Шапка -->
     <div class="header">
         <div class="logo" id="logoClick">offline<span> .7а</span></div>
@@ -928,6 +966,42 @@
         const editCurrentImageSrc = document.getElementById('editCurrentImageSrc');
         const cancelEdit = document.getElementById('cancelEdit');
         const saveEdit = document.getElementById('saveEdit');
+        
+        // Элемент таймера
+        const daysCount = document.getElementById('daysCount');
+        
+        // ========== ТАЙМЕР ДО КАНИКУЛ ==========
+        function updateTimer() {
+            const today = new Date();
+            const vacation = new Date(2026, 2, 28); // 28 марта 2026 (месяцы с 0: 0-янв, 1-фев, 2-мар)
+            
+            // Разница в миллисекундах
+            const diff = vacation - today;
+            
+            // Переводим в дни
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            
+            if (days > 0) {
+                // Склонение слова "день"
+                let daysText;
+                if (days % 10 === 1 && days % 100 !== 11) {
+                    daysText = 'день';
+                } else if (days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 10 || days % 100 >= 20)) {
+                    daysText = 'дня';
+                } else {
+                    daysText = 'дней';
+                }
+                
+                daysCount.textContent = `${days} ${daysText}`;
+            } else if (days === 0) {
+                daysCount.textContent = '🇸​​​​​🇪​​​​​🇬​​​​​🇴​​​​​🇩​​​​​🇳​​​​​🇾​​​​​🇦​​​​​! 🎉';
+            } else {
+                daysCount.textContent = 'каникулы 🎉';
+            }
+        }
+        
+        // Обновляем таймер каждую секунду
+        setInterval(updateTimer, 1000);
         
         // ========== УПРАВЛЕНИЕ ЗАГРУЗКОЙ ==========
         function showLoading(show) {
@@ -1328,6 +1402,7 @@
         // ========== ЗАГРУЗКА ПРИ СТАРТЕ ==========
         window.addEventListener('DOMContentLoaded', () => {
             loadMainTab();
+            updateTimer(); // Запускаем таймер сразу
         });
         
         // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
