@@ -127,12 +127,27 @@
             position: relative;
         }
         
+        .post.pinned {
+            border-left: 3px solid #000;
+        }
+        
         .post-header {
             padding: 14px 16px;
             border-bottom: 1px solid #f5f5f5;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .post-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pin-icon {
+            color: #000;
+            font-size: 14px;
         }
         
         .post-title {
@@ -160,6 +175,15 @@
         }
         
         .post-action-btn:hover {
+            opacity: 1;
+        }
+        
+        .post-action-btn.pin:hover {
+            color: #000;
+        }
+        
+        .post-action-btn.pin.active {
+            color: #000;
             opacity: 1;
         }
         
@@ -1065,6 +1089,45 @@
             }
         };
         
+        // ========== ЗАКРЕПЛЕНИЕ ПОСТА ==========
+        window.togglePin = async function(postId, button) {
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const doc = await postRef.get();
+                
+                if (!doc.exists) return;
+                
+                const post = doc.data();
+                const newPinned = !post.pinned;
+                
+                // Если закрепляем, нужно открепить предыдущий
+                if (newPinned) {
+                    // Ищем пост, который сейчас закреплен
+                    const snapshot = await db.collection('posts').where('pinned', '==', true).get();
+                    const promises = [];
+                    
+                    snapshot.forEach(doc => {
+                        if (doc.id !== postId) {
+                            promises.push(doc.ref.update({ pinned: false }));
+                        }
+                    });
+                    
+                    await Promise.all(promises);
+                }
+                
+                // Обновляем текущий пост
+                await postRef.update({
+                    pinned: newPinned
+                });
+                
+                // Перезагружаем посты
+                loadPosts();
+                
+            } catch (error) {
+                console.error('Ошибка при закреплении:', error);
+            }
+        };
+        
         // ========== ОТСЛЕЖИВАНИЕ ПРОСМОТРОВ ==========
         function setupViewTracking() {
             const posts = document.querySelectorAll('.post');
@@ -1380,18 +1443,31 @@
             const postsList = document.getElementById('postsList');
             if (!postsList) return;
             
-            db.collection('posts').orderBy('date', 'desc').get()
+            db.collection('posts').get()
                 .then((snapshot) => {
                     if (snapshot.empty) {
                         postsList.innerHTML = '<div class="empty-state">пока нет расписания</div>';
                         return;
                     }
                     
-                    let html = '';
+                    // Сортируем: сначала закрепленные, потом по дате
+                    let posts = [];
                     snapshot.forEach(doc => {
-                        const post = doc.data();
-                        const postId = doc.id;
-                        
+                        posts.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    
+                    // Сортировка: pinned сначала, потом по дате (новые сверху)
+                    posts.sort((a, b) => {
+                        if (a.pinned && !b.pinned) return -1;
+                        if (!a.pinned && b.pinned) return 1;
+                        return new Date(b.date) - new Date(a.date);
+                    });
+                    
+                    let html = '';
+                    posts.forEach(post => {
                         // Для лайков
                         const likes = post.likes || [];
                         const likedBy = post.likedBy || {};
@@ -1402,15 +1478,21 @@
                         const views = post.views || 0;
                         
                         html += `
-                            <div class="post" id="post-${postId}">
+                            <div class="post ${post.pinned ? 'pinned' : ''}" id="post-${post.id}">
                                 <div class="post-header">
-                                    <div class="post-title">${post.title || 'РАСПИСАНИЕ'}</div>
+                                    <div class="post-title-wrapper">
+                                        ${post.pinned ? '<i class="fas fa-thumbtack pin-icon"></i>' : ''}
+                                        <div class="post-title">${post.title || 'РАСПИСАНИЕ'}</div>
+                                    </div>
                                     ${isAdmin ? `
                                         <div class="post-actions">
-                                            <button class="post-action-btn edit" onclick="editPost('${postId}')">
+                                            <button class="post-action-btn pin ${post.pinned ? 'active' : ''}" onclick="togglePin('${post.id}', this)">
+                                                <i class="fas fa-thumbtack"></i>
+                                            </button>
+                                            <button class="post-action-btn edit" onclick="editPost('${post.id}')">
                                                 <i class="fas fa-pen"></i>
                                             </button>
-                                            <button class="post-action-btn delete" onclick="deletePost('${postId}')">
+                                            <button class="post-action-btn delete" onclick="deletePost('${post.id}')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -1421,7 +1503,7 @@
                                 
                                 <div class="post-footer">
                                     <div class="post-stats">
-                                        <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${postId}', this)">
+                                        <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', this)">
                                             <i class="fa${userLiked ? 's' : 'r'} fa-heart"></i>
                                             <span class="like-count">${likesCount}</span>
                                         </button>
@@ -1473,7 +1555,8 @@
                     date: new Date().toISOString(),
                     likes: [],
                     likedBy: {},
-                    views: 0
+                    views: 0,
+                    pinned: false
                 });
                 
                 document.getElementById('postTitle').value = '';
