@@ -201,20 +201,27 @@
             margin-top: 12px;
         }
         
+        .post-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
         .like-button {
             background: none;
             border: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
-            padding: 8px 0;
+            padding: 4px 0;
             color: #999;
             transition: color 0.1s;
+            font-size: 14px;
         }
         
         .like-button i {
-            font-size: 18px;
+            font-size: 16px;
         }
         
         .like-button.liked {
@@ -225,8 +232,16 @@
             font-weight: 900;
         }
         
-        .like-count {
+        .views-count {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #999;
             font-size: 14px;
+        }
+        
+        .views-count i {
+            font-size: 16px;
         }
         
         .post-date {
@@ -711,20 +726,6 @@
             width: 100%;
             border: none;
         }
-        
-        /* ID пользователя */
-        .user-id-badge {
-            font-size: 11px;
-            color: #ccc;
-            padding: 4px 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .user-id-badge i {
-            font-size: 10px;
-        }
     </style>
 </head>
 <body>
@@ -858,6 +859,16 @@
             userId = 'user_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
             localStorage.setItem('userId7a', userId);
         }
+        
+        // Множество постов, которые уже посмотрели (для просмотров)
+        let viewedPosts = new Set();
+        const viewedStorage = localStorage.getItem('viewedPosts7a');
+        if (viewedStorage) {
+            viewedPosts = new Set(JSON.parse(viewedStorage));
+        }
+        
+        // Таймеры для просмотров
+        let viewTimers = {};
         
         // ========== ЭЛЕМЕНТЫ ==========
         const contentDiv = document.getElementById('content');
@@ -1033,6 +1044,7 @@
                     // Обновляем UI
                     button.classList.remove('liked');
                     button.querySelector('.like-count').textContent = newLikes.length;
+                    button.querySelector('i').className = 'far fa-heart';
                 } else {
                     // Ставим лайк
                     likedBy[userId] = true;
@@ -1046,11 +1058,78 @@
                     // Обновляем UI
                     button.classList.add('liked');
                     button.querySelector('.like-count').textContent = newLikes.length;
+                    button.querySelector('i').className = 'fas fa-heart';
                 }
             } catch (error) {
                 console.error('Ошибка при лайке:', error);
             }
         };
+        
+        // ========== ОТСЛЕЖИВАНИЕ ПРОСМОТРОВ ==========
+        function setupViewTracking() {
+            const posts = document.querySelectorAll('.post');
+            
+            // Очищаем старые таймеры
+            Object.keys(viewTimers).forEach(key => {
+                clearTimeout(viewTimers[key]);
+                delete viewTimers[key];
+            });
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const post = entry.target;
+                    const postId = post.id.replace('post-', '');
+                    
+                    if (entry.isIntersecting) {
+                        // Пост появился в зоне видимости - запускаем таймер
+                        if (!viewedPosts.has(postId) && !viewTimers[postId]) {
+                            viewTimers[postId] = setTimeout(async () => {
+                                // Проверяем, виден ли пост всё еще
+                                const rect = post.getBoundingClientRect();
+                                const isStillVisible = rect.top < window.innerHeight && rect.bottom > 0;
+                                
+                                if (isStillVisible && !viewedPosts.has(postId)) {
+                                    try {
+                                        const postRef = db.collection('posts').doc(postId);
+                                        const doc = await postRef.get();
+                                        
+                                        if (doc.exists) {
+                                            const post = doc.data();
+                                            const currentViews = post.views || 0;
+                                            
+                                            await postRef.update({
+                                                views: currentViews + 1
+                                            });
+                                            
+                                            viewedPosts.add(postId);
+                                            localStorage.setItem('viewedPosts7a', JSON.stringify([...viewedPosts]));
+                                            
+                                            const viewsElement = post.querySelector('.views-count span');
+                                            if (viewsElement) {
+                                                viewsElement.textContent = currentViews + 1;
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.error('Ошибка при обновлении просмотров:', error);
+                                    }
+                                }
+                                delete viewTimers[postId];
+                            }, 2000); // 2 секунды
+                        }
+                    } else {
+                        // Пост скрылся - отменяем таймер
+                        if (viewTimers[postId]) {
+                            clearTimeout(viewTimers[postId]);
+                            delete viewTimers[postId];
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.3 // Пост виден хотя бы на 30%
+            });
+            
+            posts.forEach(post => observer.observe(post));
+        }
         
         // ========== РЕДАКТИРОВАНИЕ ПОСТА ==========
         window.editPost = function(postId) {
@@ -1319,6 +1398,9 @@
                         const userLiked = likedBy[userId] === true;
                         const likesCount = likes.length;
                         
+                        // Для просмотров
+                        const views = post.views || 0;
+                        
                         html += `
                             <div class="post" id="post-${postId}">
                                 <div class="post-header">
@@ -1338,16 +1420,26 @@
                                 ${post.content ? `<div class="post-content">${post.content}</div>` : ''}
                                 
                                 <div class="post-footer">
-                                    <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${postId}', this)">
-                                        <i class="fa${userLiked ? 's' : 'r'} fa-heart"></i>
-                                        <span class="like-count">${likesCount}</span>
-                                    </button>
+                                    <div class="post-stats">
+                                        <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${postId}', this)">
+                                            <i class="fa${userLiked ? 's' : 'r'} fa-heart"></i>
+                                            <span class="like-count">${likesCount}</span>
+                                        </button>
+                                        <div class="views-count">
+                                            <i class="far fa-eye"></i>
+                                            <span>${views}</span>
+                                        </div>
+                                    </div>
                                     <div class="post-date">${formatDate(post.date)}</div>
                                 </div>
                             </div>
                         `;
                     });
+                    
                     postsList.innerHTML = html;
+                    
+                    // Запускаем отслеживание просмотров после отрисовки постов
+                    setupViewTracking();
                 })
                 .catch(error => {
                     console.error('Ошибка:', error);
@@ -1380,7 +1472,8 @@
                     imageBase64: imageBase64,
                     date: new Date().toISOString(),
                     likes: [],
-                    likedBy: {}
+                    likedBy: {},
+                    views: 0
                 });
                 
                 document.getElementById('postTitle').value = '';
