@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>offline — 7А класс</title>
+    
+    <!-- Только иконки Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* МАКСИМАЛЬНЫЙ МИНИМАЛИЗМ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.3;
+        }
+        
+        /* Шапка */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+            user-select: none;
+            cursor: default;
+        }
+        
+        .logo span {
+            font-weight: 400;
+            color: #666;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .tab {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #999;
+            cursor: pointer;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.1s;
+        }
+        
+        .tab.active {
+            color: #000;
+            border-bottom-color: #000;
+        }
+        
+        /* Основной контент */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px 80px;
+        }
+        
+        /* СКЕЛЕТОНЫ */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .skeleton {
+            background: #f0f0f0;
+            border-radius: 0;
+            margin-bottom: 12px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-title {
+            height: 20px;
+            width: 40%;
+            background: #e0e0e0;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-image {
+            height: 200px;
+            width: 100%;
+            background: #e0e0e0;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-text {
+            height: 16px;
+            width: 100%;
+            background: #e0e0e0;
+            margin-bottom: 6px;
+        }
+        
+        /* Карточки постов */
+        .post {
+            background: white;
+            border: 1px solid #f0f0f0;
+            padding: 0 0 16px 0;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .post-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-title {
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #333;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .post-action-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            transition: color 0.1s;
+            opacity: 0.7;
+        }
+        
+        .post-action-btn:hover {
+            opacity: 1;
+        }
+        
+        .post-action-btn.edit:hover {
+            color: #007aff;
+        }
+        
+        .post-action-btn.delete:hover {
+            color: #ff3b30;
+        }
+        
+        .post-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            background: #fafafa;
+            display: block;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: opacity 0.1s;
+        }
+        
+        .post-image:hover {
+            opacity: 0.9;
+        }
+        
+        .post-content {
+            font-size: 15px;
+            color: #1d1d1f;
+            padding: 12px 16px 0;
+        }
+        
+        .post-footer {
+            padding: 12px 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #f5f5f5;
+            margin-top: 12px;
+        }
+        
+        .like-button {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 0;
+            color: #999;
+            transition: color 0.1s;
+        }
+        
+        .like-button i {
+            font-size: 18px;
+        }
+        
+        .like-button.liked {
+            color: #ff3b30;
+        }
+        
+        .like-button.liked i {
+            font-weight: 900;
+        }
+        
+        .like-count {
+            font-size: 14px;
+        }
+        
+        .post-date {
+            font-size: 11px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+        
+        /* Список файлов ВПР */
+        .vpr-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .vpr-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .vpr-info i {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        .vpr-name {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .vpr-date {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 2px;
+        }
+        
+        .vpr-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .vpr-btn {
+            background: none;
+            border: 1px solid #ddd;
+            color: #000;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        
+        .vpr-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        /* Панель админа */
+        .admin-panel {
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .admin-panel h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            margin-bottom: 12px;
+            background: white;
+            border-radius: 0;
+        }
+        
+        .admin-file {
+            width: 100%;
+            padding: 12px 0;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px dashed #ccc;
+            padding: 12px;
+        }
+        
+        .image-preview-container {
+            margin-bottom: 12px;
+            display: none;
+        }
+        
+        .image-preview-container.show {
+            display: block;
+        }
+        
+        .image-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .image-size-warning {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .admin-btn {
+            background: black;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 0;
+            width: 100%;
+            font-weight: 500;
+            transition: opacity 0.1s;
+        }
+        
+        .admin-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .admin-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Модальное окно редактирования */
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+        }
+        
+        .edit-modal.show {
+            display: flex;
+        }
+        
+        .edit-modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        .edit-modal-content h4 {
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .edit-modal-content .current-image {
+            margin-bottom: 16px;
+            border: 1px solid #eee;
+            padding: 8px;
+        }
+        
+        .edit-modal-content .current-image img {
+            width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+        }
+        
+        .edit-modal-content .current-image label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .edit-actions button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .edit-actions button.primary {
+            background: black;
+            color: white;
+            border-color: black;
+        }
+        
+        /* Модальное окно секретного входа */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 320px;
+            padding: 24px;
+        }
+        
+        .modal-content h4 {
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .modal-actions button.primary {
+            background: black;
+            color: white;
+            border-color: black;
+        }
+        
+        /* ПРОСМОТР ФОТО */
+        .photo-viewer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            flex-direction: column;
+        }
+        
+        .photo-viewer.show {
+            display: flex;
+        }
+        
+        .photo-toolbar {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        
+        .photo-toolbar button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px 12px;
+            opacity: 0.8;
+            transition: opacity 0.1s;
+        }
+        
+        .photo-toolbar button:hover {
+            opacity: 1;
+        }
+        
+        .photo-toolbar span {
+            font-size: 15px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        
+        .photo-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px 20px;
+        }
+        
+        .photo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        /* Пустое состояние */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+            font-size: 15px;
+        }
+        
+        /* Индикатор загрузки */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: black;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            z-index: 100;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-overlay i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Подтверждение удаления */
+        .confirm-delete {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .confirm-delete.show {
+            display: flex;
+        }
+        
+        .confirm-box {
+            background: white;
+            width: 280px;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .confirm-box p {
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        .confirm-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .confirm-actions button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .confirm-actions button.delete-confirm {
+            background: #ff3b30;
+            color: white;
+            border-color: #ff3b30;
+        }
+        
+        /* Просмотр PDF */
+        .pdf-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .pdf-viewer.show {
+            display: flex;
+        }
+        
+        .pdf-toolbar {
+            padding: 12px 16px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .pdf-toolbar button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+        }
+        
+        .pdf-toolbar button:hover {
+            background: #eee;
+        }
+        
+        .pdf-toolbar span {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .pdf-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+        
+        /* ID пользователя */
+        .user-id-badge {
+            font-size: 11px;
+            color: #ccc;
+            padding: 4px 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .user-id-badge i {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <div class="header">
+        <div class="logo" id="logoClick">offline<span> .7а</span></div>
+        <div class="tabs">
+            <button class="tab active" id="tabMain">главная</button>
+            <button class="tab" id="tabUseful">полезно</button>
+        </div>
+    </div>
+    
+    <!-- Контейнер -->
+    <div class="container" id="content"></div>
+    
+    <!-- Модалка секретного входа -->
+    <div class="modal" id="secretModal">
+        <div class="modal-content">
+            <h4>доступ разработчика</h4>
+            <input type="text" id="loginName" placeholder="имя" autocomplete="off">
+            <input type="password" id="loginPass" placeholder="пароль">
+            <div class="modal-actions">
+                <button id="closeModal">отмена</button>
+                <button class="primary" id="checkLogin">войти</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модалка редактирования поста -->
+    <div class="edit-modal" id="editModal">
+        <div class="edit-modal-content">
+            <h4><i class="fas fa-edit"></i> редактировать пост</h4>
+            <input type="text" id="editTitle" class="admin-input" placeholder="название">
+            
+            <div id="editCurrentImage" class="current-image" style="display: none;">
+                <label>текущее фото:</label>
+                <img id="editCurrentImageSrc" src="#" alt="текущее фото">
+            </div>
+            
+            <div style="border: 1px solid #eee; padding: 12px; margin-bottom: 12px;">
+                <label style="font-size: 13px; color: #666; margin-bottom: 8px; display: block;">
+                    <i class="fas fa-image"></i> заменить фото (необязательно)
+                </label>
+                <input type="file" id="editImage" class="admin-file" accept="image/*">
+            </div>
+            
+            <div id="editPreviewContainer" class="image-preview-container">
+                <img id="editPreview" class="image-preview" src="#" alt="preview">
+            </div>
+            
+            <textarea id="editText" class="admin-input" rows="2" placeholder="комментарий"></textarea>
+            
+            <div class="edit-actions">
+                <button id="cancelEdit">отмена</button>
+                <button class="primary" id="saveEdit">сохранить</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Подтверждение удаления -->
+    <div class="confirm-delete" id="confirmDelete">
+        <div class="confirm-box">
+            <p>удалить этот пост?</p>
+            <div class="confirm-actions">
+                <button id="cancelDelete">отмена</button>
+                <button class="delete-confirm" id="confirmDeleteBtn">удалить</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Просмотр PDF -->
+    <div class="pdf-viewer" id="pdfViewer">
+        <div class="pdf-toolbar">
+            <button id="closePdf"><i class="fas fa-arrow-left"></i></button>
+            <span id="pdfTitle">Просмотр</span>
+            <button id="downloadPdf"><i class="fas fa-download"></i></button>
+        </div>
+        <iframe id="pdfFrame" class="pdf-frame"></iframe>
+    </div>
+    
+    <!-- ПРОСМОТР ФОТО -->
+    <div class="photo-viewer" id="photoViewer">
+        <div class="photo-toolbar">
+            <button id="closePhoto"><i class="fas fa-times"></i></button>
+            <span id="photoTitle">просмотр фото</span>
+            <button id="downloadPhoto"><i class="fas fa-download"></i></button>
+        </div>
+        <div class="photo-container">
+            <img id="fullscreenPhoto" src="#" alt="полноэкранное фото">
+        </div>
+    </div>
+    
+    <!-- Индикатор загрузки -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <i class="fas fa-spinner"></i>
+        <span>загрузка...</span>
+    </div>
+    
+    <script>
+        // ТВОИ КЛЮЧИ FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3bqsYpYd8sUjrHdg1WuIVW3DvWAdALQw",
+            authDomain: "aclass-9997a.firebaseapp.com",
+            projectId: "aclass-9997a",
+            storageBucket: "aclass-9997a.firebasestorage.app",
+            messagingSenderId: "1002595515826",
+            appId: "1:1002595515826:web:240d24b764c82e2a0ab8ab",
+            measurementId: "G-1DF5BH4ZY1"
+        };
+        
+        // Инициализация
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // ========== СОСТОЯНИЕ ==========
+        let currentTab = 'main';
+        let isAdmin = false;
+        let clickCount = 0;
+        let clickTimer = null;
+        
+        // Для редактирования
+        let editingPostId = null;
+        
+        // Для подтверждения удаления
+        let itemToDelete = null;
+        let itemType = null;
+        
+        // ID текущего пользователя (для лайков)
+        let userId = localStorage.getItem('userId7a');
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+            localStorage.setItem('userId7a', userId);
+        }
+        
+        // ========== ЭЛЕМЕНТЫ ==========
+        const contentDiv = document.getElementById('content');
+        const tabMainBtn = document.getElementById('tabMain');
+        const tabUsefulBtn = document.getElementById('tabUseful');
+        const logo = document.getElementById('logoClick');
+        const modal = document.getElementById('secretModal');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const pdfViewer = document.getElementById('pdfViewer');
+        const pdfFrame = document.getElementById('pdfFrame');
+        const pdfTitle = document.getElementById('pdfTitle');
+        const closePdf = document.getElementById('closePdf');
+        const downloadPdf = document.getElementById('downloadPdf');
+        
+        // Элементы для просмотра фото
+        const photoViewer = document.getElementById('photoViewer');
+        const fullscreenPhoto = document.getElementById('fullscreenPhoto');
+        const photoTitle = document.getElementById('photoTitle');
+        const closePhoto = document.getElementById('closePhoto');
+        const downloadPhoto = document.getElementById('downloadPhoto');
+        
+        // Элементы для редактирования
+        const editModal = document.getElementById('editModal');
+        const editTitle = document.getElementById('editTitle');
+        const editText = document.getElementById('editText');
+        const editImage = document.getElementById('editImage');
+        const editPreview = document.getElementById('editPreview');
+        const editPreviewContainer = document.getElementById('editPreviewContainer');
+        const editCurrentImage = document.getElementById('editCurrentImage');
+        const editCurrentImageSrc = document.getElementById('editCurrentImageSrc');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const saveEdit = document.getElementById('saveEdit');
+        
+        // ========== УПРАВЛЕНИЕ ЗАГРУЗКОЙ ==========
+        function showLoading(show) {
+            if (show) {
+                loadingOverlay.classList.add('show');
+            } else {
+                loadingOverlay.classList.remove('show');
+            }
+        }
+        
+        // ========== СКЕЛЕТОНЫ ==========
+        function showSkeletons(type) {
+            if (type === 'posts') {
+                let skeletons = '';
+                for (let i = 0; i < 3; i++) {
+                    skeletons += `
+                        <div class="skeleton" style="padding: 16px;">
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-text"></div>
+                        </div>
+                    `;
+                }
+                return skeletons;
+            } else {
+                let skeletons = '';
+                for (let i = 0; i < 4; i++) {
+                    skeletons += `
+                        <div class="skeleton" style="padding: 16px;">
+                            <div class="skeleton-text" style="width: 60%;"></div>
+                        </div>
+                    `;
+                }
+                return skeletons;
+            }
+        }
+        
+        // ========== СПИСОК ВСЕХ ТВОИХ ВПР ==========
+        function getVprList() {
+            return [
+                {
+                    name: 'ВПР по английскому языку 7 класс 2026',
+                    fileName: '7к демо ВПР англ.pdf',
+                    date: new Date().toISOString()
+                },
+                {
+                    name: 'ВПР по физике 7 класс 2026',
+                    fileName: '7к демо ВПР физ.pdf',
+                    date: new Date().toISOString()
+                },
+                {
+                    name: 'ВПР по информатике 7 класс 2026',
+                    fileName: '7к демо ВПР инф.pdf',
+                    date: new Date().toISOString()
+                },
+                {
+                    name: 'ВПР по истории 7 класс 2026',
+                    fileName: '7к демо ВПР ист.pdf',
+                    date: new Date().toISOString()
+                },
+                {
+                    name: 'ВПР по русскому языку 7 класс 2026',
+                    fileName: '7к демо ВПР ру.pdf',
+                    date: new Date().toISOString()
+                }
+            ];
+        }
+        
+        // ========== ПРОСМОТР PDF ==========
+        window.openPdf = function(fileName, title) {
+            pdfTitle.textContent = title || fileName;
+            pdfFrame.src = `vpr/${fileName}`;
+            pdfViewer.classList.add('show');
+        };
+        
+        closePdf.addEventListener('click', () => {
+            pdfViewer.classList.remove('show');
+            pdfFrame.src = '';
+        });
+        
+        downloadPdf.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = pdfFrame.src;
+            link.download = pdfTitle.textContent + '.pdf';
+            link.click();
+        });
+        
+        // ========== ПРОСМОТР ФОТО ==========
+        window.openPhoto = function(imageSrc, title) {
+            fullscreenPhoto.src = imageSrc;
+            photoTitle.textContent = title || 'просмотр фото';
+            photoViewer.classList.add('show');
+        };
+        
+        closePhoto.addEventListener('click', () => {
+            photoViewer.classList.remove('show');
+            fullscreenPhoto.src = '#';
+        });
+        
+        downloadPhoto.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = fullscreenPhoto.src;
+            link.download = 'расписание.jpg';
+            link.click();
+        });
+        
+        fullscreenPhoto.addEventListener('click', () => {
+            photoViewer.classList.remove('show');
+            fullscreenPhoto.src = '#';
+        });
+        
+        // ========== ЛАЙКИ ==========
+        window.toggleLike = async function(postId, button) {
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                
+                // Получаем текущие лайки
+                const doc = await postRef.get();
+                if (!doc.exists) return;
+                
+                const post = doc.data();
+                const likes = post.likes || [];
+                const likedBy = post.likedBy || {};
+                
+                // Проверяем, лайкал ли этот пользователь
+                const userLiked = likedBy[userId] === true;
+                
+                if (userLiked) {
+                    // Убираем лайк
+                    delete likedBy[userId];
+                    const newLikes = likes.filter(id => id !== userId);
+                    
+                    await postRef.update({
+                        likes: newLikes,
+                        likedBy: likedBy
+                    });
+                    
+                    // Обновляем UI
+                    button.classList.remove('liked');
+                    button.querySelector('.like-count').textContent = newLikes.length;
+                } else {
+                    // Ставим лайк
+                    likedBy[userId] = true;
+                    const newLikes = [...likes, userId];
+                    
+                    await postRef.update({
+                        likes: newLikes,
+                        likedBy: likedBy
+                    });
+                    
+                    // Обновляем UI
+                    button.classList.add('liked');
+                    button.querySelector('.like-count').textContent = newLikes.length;
+                }
+            } catch (error) {
+                console.error('Ошибка при лайке:', error);
+            }
+        };
+        
+        // ========== РЕДАКТИРОВАНИЕ ПОСТА ==========
+        window.editPost = function(postId) {
+            editingPostId = postId;
+            
+            // Получаем данные поста
+            db.collection('posts').doc(postId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const post = doc.data();
+                        editTitle.value = post.title || '';
+                        editText.value = post.content || '';
+                        
+                        if (post.imageBase64) {
+                            editCurrentImageSrc.src = post.imageBase64;
+                            editCurrentImage.style.display = 'block';
+                        } else {
+                            editCurrentImage.style.display = 'none';
+                        }
+                        
+                        editModal.classList.add('show');
+                    }
+                })
+                .catch(error => {
+                    alert('Ошибка загрузки поста: ' + error.message);
+                });
+        };
+        
+        // Предпросмотр нового фото при редактировании
+        editImage.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editPreview.src = e.target.result;
+                    editPreviewContainer.classList.add('show');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                editPreviewContainer.classList.remove('show');
+            }
+        });
+        
+        // Сохранение изменений
+        saveEdit.addEventListener('click', async () => {
+            if (!editingPostId) return;
+            
+            const title = editTitle.value;
+            const content = editText.value;
+            const imageFile = editImage.files[0];
+            
+            saveEdit.disabled = true;
+            saveEdit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> сохранение...';
+            showLoading(true);
+            
+            try {
+                const updateData = {
+                    title: title || 'РАСПИСАНИЕ',
+                    content: content || ''
+                };
+                
+                if (imageFile) {
+                    // Если загружено новое фото, конвертируем его
+                    updateData.imageBase64 = await imageToBase64(imageFile);
+                }
+                
+                await db.collection('posts').doc(editingPostId).update(updateData);
+                
+                // Закрываем модалку и обновляем список
+                editModal.classList.remove('show');
+                editImage.value = '';
+                editPreviewContainer.classList.remove('show');
+                
+                if (currentTab === 'main') {
+                    loadMainTab();
+                }
+                
+            } catch (error) {
+                alert('Ошибка при сохранении: ' + error.message);
+            } finally {
+                saveEdit.disabled = false;
+                saveEdit.innerHTML = 'сохранить';
+                showLoading(false);
+                editingPostId = null;
+            }
+        });
+        
+        // Отмена редактирования
+        cancelEdit.addEventListener('click', () => {
+            editModal.classList.remove('show');
+            editImage.value = '';
+            editPreviewContainer.classList.remove('show');
+            editingPostId = null;
+        });
+        
+        // ========== КОНВЕРТАЦИЯ ФОТО В BASE64 ==========
+        function imageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const img = new Image();
+                    img.src = reader.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        const maxSize = 1200;
+                        if (width > maxSize || height > maxSize) {
+                            if (width > height) {
+                                height = Math.round(height * maxSize / width);
+                                width = maxSize;
+                            } else {
+                                width = Math.round(width * maxSize / height);
+                                height = maxSize;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                        resolve(base64);
+                    };
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+        
+        // ========== ЗАГРУЗКА ПРИ СТАРТЕ ==========
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMainTab();
+        });
+        
+        // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
+        tabMainBtn.addEventListener('click', () => {
+            currentTab = 'main';
+            tabMainBtn.classList.add('active');
+            tabUsefulBtn.classList.remove('active');
+            loadMainTab();
+        });
+        
+        tabUsefulBtn.addEventListener('click', () => {
+            currentTab = 'useful';
+            tabUsefulBtn.classList.add('active');
+            tabMainBtn.classList.remove('active');
+            loadUsefulTab();
+        });
+        
+        // ========== УДАЛЕНИЕ ==========
+        function showDeleteConfirm(id, type) {
+            itemToDelete = id;
+            itemType = type;
+            confirmDelete.classList.add('show');
+        }
+        
+        cancelDelete.addEventListener('click', () => {
+            confirmDelete.classList.remove('show');
+            itemToDelete = null;
+            itemType = null;
+        });
+        
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (itemToDelete && itemType) {
+                deleteItem(itemToDelete, itemType);
+            }
+            confirmDelete.classList.remove('show');
+        });
+        
+        async function deleteItem(id, type) {
+            showLoading(true);
+            try {
+                if (type === 'post') {
+                    await db.collection('posts').doc(id).delete();
+                }
+                
+                if (currentTab === 'main') {
+                    loadMainTab();
+                } else {
+                    loadUsefulTab();
+                }
+            } catch (error) {
+                alert('Ошибка при удалении: ' + error.message);
+            } finally {
+                showLoading(false);
+                itemToDelete = null;
+                itemType = null;
+            }
+        }
+        
+        // ========== ГЛАВНАЯ ==========
+        function loadMainTab() {
+            if (isAdmin) {
+                let html = `
+                    <div class="admin-panel">
+                        <h3><i class="fas fa-camera"></i> загрузить расписание</h3>
+                        <input type="text" id="postTitle" class="admin-input" placeholder="название (например, РАСПИСАНИЕ НА ПОНЕДЕЛЬНИК)">
+                        
+                        <div style="border: 1px solid #eee; padding: 12px; margin-bottom: 12px;">
+                            <label style="font-size: 13px; color: #666; margin-bottom: 8px; display: block;">
+                                <i class="fas fa-image"></i> фото расписания
+                            </label>
+                            <input type="file" id="postImage" class="admin-file" accept="image/*">
+                            <div class="image-size-warning">фото будет уменьшено для экономии места</div>
+                        </div>
+                        
+                        <div id="imagePreviewContainer" class="image-preview-container">
+                            <img id="imagePreview" class="image-preview" src="#" alt="preview" onclick="openPhoto(this.src, 'предпросмотр')">
+                        </div>
+                        
+                        <textarea id="postText" class="admin-input" rows="2" placeholder="комментарий (необязательно)"></textarea>
+                        
+                        <button class="admin-btn" id="publishPost">
+                            <i class="fas fa-cloud-upload-alt"></i> опубликовать
+                        </button>
+                    </div>
+                    <div id="postsList">${showSkeletons('posts')}</div>
+                `;
+                contentDiv.innerHTML = html;
+                
+                document.getElementById('postImage').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('imagePreview');
+                            const container = document.getElementById('imagePreviewContainer');
+                            preview.src = e.target.result;
+                            container.classList.add('show');
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+                
+                loadPosts();
+                document.getElementById('publishPost').addEventListener('click', publishPost);
+            } else {
+                contentDiv.innerHTML = `<div id="postsList">${showSkeletons('posts')}</div>`;
+                loadPosts();
+            }
+        }
+        
+        // Загрузка постов
+        function loadPosts() {
+            const postsList = document.getElementById('postsList');
+            if (!postsList) return;
+            
+            db.collection('posts').orderBy('date', 'desc').get()
+                .then((snapshot) => {
+                    if (snapshot.empty) {
+                        postsList.innerHTML = '<div class="empty-state">пока нет расписания</div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const post = doc.data();
+                        const postId = doc.id;
+                        
+                        // Для лайков
+                        const likes = post.likes || [];
+                        const likedBy = post.likedBy || {};
+                        const userLiked = likedBy[userId] === true;
+                        const likesCount = likes.length;
+                        
+                        html += `
+                            <div class="post" id="post-${postId}">
+                                <div class="post-header">
+                                    <div class="post-title">${post.title || 'РАСПИСАНИЕ'}</div>
+                                    ${isAdmin ? `
+                                        <div class="post-actions">
+                                            <button class="post-action-btn edit" onclick="editPost('${postId}')">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <button class="post-action-btn delete" onclick="deletePost('${postId}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                ${post.imageBase64 ? `<img src="${post.imageBase64}" class="post-image" alt="расписание" onclick="openPhoto('${post.imageBase64}', '${post.title || 'расписание'}')">` : ''}
+                                ${post.content ? `<div class="post-content">${post.content}</div>` : ''}
+                                
+                                <div class="post-footer">
+                                    <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${postId}', this)">
+                                        <i class="fa${userLiked ? 's' : 'r'} fa-heart"></i>
+                                        <span class="like-count">${likesCount}</span>
+                                    </button>
+                                    <div class="post-date">${formatDate(post.date)}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    postsList.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    postsList.innerHTML = '<div class="empty-state">ошибка загрузки</div>';
+                });
+        }
+        
+        // Публикация поста
+        async function publishPost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postText').value;
+            const imageFile = document.getElementById('postImage').files[0];
+            
+            const publishBtn = document.getElementById('publishPost');
+            publishBtn.disabled = true;
+            publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> обработка фото...';
+            
+            showLoading(true);
+            
+            try {
+                let imageBase64 = '';
+                
+                if (imageFile) {
+                    imageBase64 = await imageToBase64(imageFile);
+                }
+                
+                await db.collection('posts').add({
+                    title: title || 'РАСПИСАНИЕ',
+                    content: content || '',
+                    imageBase64: imageBase64,
+                    date: new Date().toISOString(),
+                    likes: [],
+                    likedBy: {}
+                });
+                
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postText').value = '';
+                document.getElementById('postImage').value = '';
+                document.getElementById('imagePreviewContainer').classList.remove('show');
+                
+                loadPosts();
+                
+            } catch (error) {
+                alert('Ошибка: ' + error.message);
+            } finally {
+                publishBtn.disabled = false;
+                publishBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> опубликовать';
+                showLoading(false);
+            }
+        }
+        
+        // Функция удаления поста (глобальная)
+        window.deletePost = function(postId) {
+            showDeleteConfirm(postId, 'post');
+        };
+        
+        // ========== ПОЛЕЗНО (ВПР) ==========
+        function loadUsefulTab() {
+            const vprFiles = getVprList();
+            
+            contentDiv.innerHTML = `<div id="vprList">${showSkeletons('vpr')}</div>`;
+            
+            const vprList = document.getElementById('vprList');
+            
+            if (vprFiles.length === 0) {
+                vprList.innerHTML = '<div class="empty-state">нет файлов ВПР</div>';
+                return;
+            }
+            
+            let html = '';
+            vprFiles.forEach((vpr) => {
+                html += `
+                    <div class="vpr-item">
+                        <div class="vpr-info">
+                            <i class="fas fa-file-pdf"></i>
+                            <div>
+                                <div class="vpr-name">${vpr.name}</div>
+                                <div class="vpr-date">${formatDate(vpr.date)}</div>
+                                <div style="font-size: 11px; color: #aaa;">${vpr.fileName}</div>
+                            </div>
+                        </div>
+                        <div class="vpr-actions">
+                            <button class="vpr-btn" onclick="openPdf('${vpr.fileName}', '${vpr.name}')">
+                                <i class="fas fa-eye"></i> открыть
+                            </button>
+                            <a href="vpr/${vpr.fileName}" download class="vpr-btn">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            vprList.innerHTML = html;
+        }
+        
+        // ========== СЕКРЕТНЫЙ ВХОД ==========
+        logo.addEventListener('click', () => {
+            clickCount++;
+            
+            if (clickTimer) clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 3000);
+            
+            if (clickCount >= 10) {
+                clickCount = 0;
+                clearTimeout(clickTimer);
+                modal.classList.add('active');
+                document.getElementById('loginName').focus();
+            }
+        });
+        
+        document.getElementById('closeModal').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+        
+        document.getElementById('checkLogin').addEventListener('click', () => {
+            const name = document.getElementById('loginName').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value;
+            
+            if (name === 'булат' && pass === '0515') {
+                isAdmin = true;
+                modal.classList.remove('active');
+                
+                if (currentTab === 'main') {
+                    loadMainTab();
+                } else {
+                    loadUsefulTab();
+                }
+                
+                document.getElementById('loginName').value = '';
+                document.getElementById('loginPass').value = '';
+            } else {
+                alert('неверный логин или пароль');
+            }
+        });
+        
+        // Закрытие модалок по Escape
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                modal.classList.remove('active');
+                confirmDelete.classList.remove('show');
+                pdfViewer.classList.remove('show');
+                photoViewer.classList.remove('show');
+                editModal.classList.remove('show');
+                pdfFrame.src = '';
+                fullscreenPhoto.src = '#';
+            }
+        });
+        
+        // ========== ФОРМАТ ДАТЫ ==========
+        function formatDate(isoString) {
+            if (!isoString) return '';
+            const date = new Date(isoString);
+            return date.toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long'
+            }).replace(' года', '');
+        }
+    </script>
+</body>
+</html>
