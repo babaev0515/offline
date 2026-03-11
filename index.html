@@ -149,7 +149,7 @@
             margin-bottom: 6px;
         }
         
-        /* Карточки постов */
+        /* Карточки постов (главная) */
         .post {
             background: white;
             border: 1px solid #f0f0f0;
@@ -305,7 +305,395 @@
             text-transform: uppercase;
         }
         
-        /* Список файлов ВПР */
+        /* КОММЕНТАРИИ */
+        .comments-section {
+            margin-top: 16px;
+            padding: 0 16px;
+        }
+        
+        .comments-toggle {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #f0f0f0;
+            width: 100%;
+        }
+        
+        .comments-toggle i {
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        
+        .comments-toggle.open i {
+            transform: rotate(90deg);
+        }
+        
+        .comments-list {
+            margin-top: 12px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .comments-list.open {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #fafafa;
+            border-radius: 0;
+        }
+        
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            flex-shrink: 0;
+        }
+        
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .comment-time {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+        }
+        
+        .comment-text {
+            font-size: 13px;
+            word-break: break-word;
+        }
+        
+        .comment-delete {
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 6px;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+        
+        .comment:hover .comment-delete {
+            opacity: 1;
+        }
+        
+        .comment-delete:hover {
+            color: #ff3b30;
+        }
+        
+        /* Форма добавления комментария */
+        .comment-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: flex-start;
+        }
+        
+        .comment-input-wrapper {
+            flex: 1;
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            background: white;
+            border-radius: 0;
+        }
+        
+        .comment-user-info {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .comment-user-name {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            background: white;
+            border-radius: 0;
+        }
+        
+        .comment-avatar-select {
+            position: relative;
+        }
+        
+        .comment-avatar-btn {
+            background: none;
+            border: 1px solid #ddd;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .comment-avatar-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .comment-avatar-preview {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .avatar-grid {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .avatar-grid.show {
+            display: grid;
+        }
+        
+        .avatar-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .avatar-option:hover {
+            border-color: #000;
+        }
+        
+        .avatar-option.selected {
+            border-color: #000;
+        }
+        
+        .comment-submit {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 0;
+        }
+        
+        .comment-submit:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        /* Модалка выбора аватара */
+        .avatar-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+        }
+        
+        .avatar-modal.show {
+            display: flex;
+        }
+        
+        .avatar-modal-content {
+            background: white;
+            width: 320px;
+            padding: 24px;
+        }
+        
+        .avatar-modal-content h4 {
+            font-weight: 500;
+            margin-bottom: 16px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .avatar-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar-option-lg {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        
+        .avatar-option-lg:hover {
+            border-color: #000;
+        }
+        
+        .avatar-option-lg.selected {
+            border-color: #000;
+        }
+        
+        .avatar-modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .avatar-modal-actions button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .avatar-modal-actions button.primary {
+            background: black;
+            color: white;
+            border-color: black;
+        }
+        
+        /* Список файлов ВПР и ДЗ (полезно) */
+        .section-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 24px 0 12px;
+            letter-spacing: -0.2px;
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i {
+            font-size: 18px;
+            color: #000;
+        }
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Карточка домашнего задания */
+        .hw-item {
+            background: white;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 20px;
+            padding: 16px;
+        }
+        .hw-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .hw-header i {
+            font-size: 24px;
+            color: #000;
+        }
+        .hw-header h3 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .hw-date {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+        .hw-text {
+            font-size: 15px;
+            background: #f9f9f9;
+            padding: 12px;
+            margin-top: 8px;
+            white-space: pre-wrap;
+        }
+        .hw-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            background: #f4f4f4;
+            margin-top: 12px;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        /* Админ-панель для ДЗ */
+        .admin-hw-panel {
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .admin-hw-panel h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
         .vpr-item {
             display: flex;
             align-items: center;
@@ -360,7 +748,7 @@
             background: #f5f5f5;
         }
         
-        /* Панель админа */
+        /* Панель админа для главной (расписание) */
         .admin-panel {
             background: #fafafa;
             border: 1px solid #eaeaea;
@@ -816,7 +1204,21 @@
         </div>
     </div>
     
-    <!-- Модалка редактирования поста -->
+    <!-- Модалка выбора аватара -->
+    <div class="avatar-modal" id="avatarModal">
+        <div class="avatar-modal-content">
+            <h4><i class="fas fa-user-circle"></i> выбери аватар</h4>
+            <div class="avatar-options" id="avatarOptions">
+                <!-- Аватары будут сгенерированы скриптом -->
+            </div>
+            <div class="avatar-modal-actions">
+                <button id="skipAvatar">пропустить</button>
+                <button class="primary" id="selectAvatar">выбрать</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модалка редактирования поста (для главной) -->
     <div class="edit-modal" id="editModal">
         <div class="edit-modal-content">
             <h4><i class="fas fa-edit"></i> редактировать пост</h4>
@@ -908,19 +1310,22 @@
         let clickCount = 0;
         let clickTimer = null;
         
-        // Для редактирования
+        // Для редактирования постов (главная)
         let editingPostId = null;
         
         // Для подтверждения удаления
         let itemToDelete = null;
         let itemType = null;
         
-        // ID текущего пользователя (для лайков)
+        // ID текущего пользователя (для лайков и комментариев)
         let userId = localStorage.getItem('userId7a');
         if (!userId) {
             userId = 'user_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
             localStorage.setItem('userId7a', userId);
         }
+        
+        // Данные пользователя для комментариев
+        let userData = JSON.parse(localStorage.getItem('userData7a')) || null;
         
         // Множество постов, которые уже посмотрели (для просмотров)
         let viewedPosts = new Set();
@@ -931,6 +1336,9 @@
         
         // Таймеры для просмотров
         let viewTimers = {};
+        
+        // Состояние комментариев (открытые)
+        let openComments = {};
         
         // ========== ЭЛЕМЕНТЫ ==========
         const contentDiv = document.getElementById('content');
@@ -947,6 +1355,10 @@
         const pdfTitle = document.getElementById('pdfTitle');
         const closePdf = document.getElementById('closePdf');
         const downloadPdf = document.getElementById('downloadPdf');
+        const avatarModal = document.getElementById('avatarModal');
+        const avatarOptions = document.getElementById('avatarOptions');
+        const skipAvatar = document.getElementById('skipAvatar');
+        const selectAvatar = document.getElementById('selectAvatar');
         
         // Элементы для просмотра фото
         const photoViewer = document.getElementById('photoViewer');
@@ -970,28 +1382,93 @@
         // Элемент таймера
         const daysCount = document.getElementById('daysCount');
         
+        // ========== АВАТАРЫ ==========
+        const avatars = [
+            'https://i.pravatar.cc/100?u=1',
+            'https://i.pravatar.cc/100?u=2',
+            'https://i.pravatar.cc/100?u=3',
+            'https://i.pravatar.cc/100?u=4',
+            'https://i.pravatar.cc/100?u=5',
+            'https://i.pravatar.cc/100?u=6',
+            'https://i.pravatar.cc/100?u=7',
+            'https://i.pravatar.cc/100?u=8',
+            'https://i.pravatar.cc/100?u=9',
+            'https://i.pravatar.cc/100?u=10',
+            'https://i.pravatar.cc/100?u=11',
+            'https://i.pravatar.cc/100?u=12'
+        ];
+        
+        let selectedAvatar = null;
+        
+        // Функция показа модалки выбора аватара
+        function showAvatarModal(callback) {
+            // Генерируем аватары
+            let html = '';
+            avatars.forEach((avatar, index) => {
+                html += `<img src="${avatar}" class="avatar-option-lg" data-avatar="${avatar}" onclick="selectAvatarOption(this)">`;
+            });
+            avatarOptions.innerHTML = html;
+            
+            selectedAvatar = null;
+            avatarModal.classList.add('show');
+            
+            // Обработчики
+            skipAvatar.onclick = () => {
+                avatarModal.classList.remove('show');
+                callback(null);
+            };
+            
+            selectAvatar.onclick = () => {
+                avatarModal.classList.remove('show');
+                callback(selectedAvatar);
+            };
+        }
+        
+        window.selectAvatarOption = function(img) {
+            document.querySelectorAll('.avatar-option-lg').forEach(el => el.classList.remove('selected'));
+            img.classList.add('selected');
+            selectedAvatar = img.src;
+        };
+        
+        // Функция запроса имени и аватара
+        async function ensureUserData() {
+            if (userData) return userData;
+            
+            return new Promise((resolve) => {
+                // Просим ввести имя
+                const name = prompt('как тебя зовут? (никнейм)', 'аноним');
+                if (!name) {
+                    userData = { name: 'аноним', avatar: null };
+                    localStorage.setItem('userData7a', JSON.stringify(userData));
+                    resolve(userData);
+                    return;
+                }
+                
+                // Предлагаем выбрать аватар
+                showAvatarModal((avatar) => {
+                    userData = { 
+                        name: name.trim() || 'аноним', 
+                        avatar: avatar 
+                    };
+                    localStorage.setItem('userData7a', JSON.stringify(userData));
+                    resolve(userData);
+                });
+            });
+        }
+        
         // ========== ТАЙМЕР ДО КАНИКУЛ ==========
         function updateTimer() {
             const today = new Date();
-            const vacation = new Date(2026, 2, 28); // 28 марта 2026 (месяцы с 0: 0-янв, 1-фев, 2-мар)
+            const vacation = new Date(2026, 2, 28); // 28 марта 2026
             
-            // Разница в миллисекундах
             const diff = vacation - today;
-            
-            // Переводим в дни
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
             
             if (days > 0) {
-                // Склонение слова "день"
                 let daysText;
-                if (days % 10 === 1 && days % 100 !== 11) {
-                    daysText = 'день';
-                } else if (days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 10 || days % 100 >= 20)) {
-                    daysText = 'дня';
-                } else {
-                    daysText = 'дней';
-                }
-                
+                if (days % 10 === 1 && days % 100 !== 11) daysText = 'день';
+                else if (days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 10 || days % 100 >= 20)) daysText = 'дня';
+                else daysText = 'дней';
                 daysCount.textContent = `${days} ${daysText}`;
             } else if (days === 0) {
                 daysCount.textContent = '🇸​​​​​🇪​​​​​🇬​​​​​🇴​​​​​🇩​​​​​🇳​​​​​🇾​​​​​🇦​​​​​! 🎉';
@@ -999,74 +1476,33 @@
                 daysCount.textContent = 'каникулы 🎉';
             }
         }
-        
-        // Обновляем таймер каждую секунду
         setInterval(updateTimer, 1000);
         
-        // ========== УПРАВЛЕНИЕ ЗАГРУЗКОЙ ==========
         function showLoading(show) {
-            if (show) {
-                loadingOverlay.classList.add('show');
-            } else {
-                loadingOverlay.classList.remove('show');
-            }
+            loadingOverlay.classList.toggle('show', show);
         }
         
         // ========== СКЕЛЕТОНЫ ==========
         function showSkeletons(type) {
             if (type === 'posts') {
-                let skeletons = '';
-                for (let i = 0; i < 3; i++) {
-                    skeletons += `
-                        <div class="skeleton" style="padding: 16px;">
-                            <div class="skeleton-title"></div>
-                            <div class="skeleton-image"></div>
-                            <div class="skeleton-text"></div>
-                        </div>
-                    `;
-                }
-                return skeletons;
+                let s = '';
+                for (let i = 0; i < 3; i++) s += `<div class="skeleton" style="padding:16px;"><div class="skeleton-title"></div><div class="skeleton-image"></div><div class="skeleton-text"></div></div>`;
+                return s;
             } else {
-                let skeletons = '';
-                for (let i = 0; i < 4; i++) {
-                    skeletons += `
-                        <div class="skeleton" style="padding: 16px;">
-                            <div class="skeleton-text" style="width: 60%;"></div>
-                        </div>
-                    `;
-                }
-                return skeletons;
+                let s = '';
+                for (let i = 0; i < 4; i++) s += `<div class="skeleton" style="padding:16px;"><div class="skeleton-text" style="width:60%;"></div></div>`;
+                return s;
             }
         }
         
-        // ========== СПИСОК ВСЕХ ТВОИХ ВПР ==========
+        // ========== СПИСОК ВПР ==========
         function getVprList() {
             return [
-                {
-                    name: 'ВПР по английскому языку 7 класс 2026',
-                    fileName: '7к демо ВПР англ.pdf',
-                    date: new Date().toISOString()
-                },
-                {
-                    name: 'ВПР по физике 7 класс 2026',
-                    fileName: '7к демо ВПР физ.pdf',
-                    date: new Date().toISOString()
-                },
-                {
-                    name: 'ВПР по информатике 7 класс 2026',
-                    fileName: '7к демо ВПР инф.pdf',
-                    date: new Date().toISOString()
-                },
-                {
-                    name: 'ВПР по истории 7 класс 2026',
-                    fileName: '7к демо ВПР ист.pdf',
-                    date: new Date().toISOString()
-                },
-                {
-                    name: 'ВПР по русскому языку 7 класс 2026',
-                    fileName: '7к демо ВПР ру.pdf',
-                    date: new Date().toISOString()
-                }
+                { name: 'ВПР по английскому языку 7 класс 2026', fileName: '7к демо ВПР англ.pdf', date: new Date().toISOString() },
+                { name: 'ВПР по физике 7 класс 2026', fileName: '7к демо ВПР физ.pdf', date: new Date().toISOString() },
+                { name: 'ВПР по информатике 7 класс 2026', fileName: '7к демо ВПР инф.pdf', date: new Date().toISOString() },
+                { name: 'ВПР по истории 7 класс 2026', fileName: '7к демо ВПР ист.pdf', date: new Date().toISOString() },
+                { name: 'ВПР по русскому языку 7 класс 2026', fileName: '7к демо ВПР ру.pdf', date: new Date().toISOString() }
             ];
         }
         
@@ -1076,18 +1512,8 @@
             pdfFrame.src = `vpr/${fileName}`;
             pdfViewer.classList.add('show');
         };
-        
-        closePdf.addEventListener('click', () => {
-            pdfViewer.classList.remove('show');
-            pdfFrame.src = '';
-        });
-        
-        downloadPdf.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.href = pdfFrame.src;
-            link.download = pdfTitle.textContent + '.pdf';
-            link.click();
-        });
+        closePdf.addEventListener('click', () => { pdfViewer.classList.remove('show'); pdfFrame.src = ''; });
+        downloadPdf.addEventListener('click', () => { const link = document.createElement('a'); link.href = pdfFrame.src; link.download = pdfTitle.textContent + '.pdf'; link.click(); });
         
         // ========== ПРОСМОТР ФОТО ==========
         window.openPhoto = function(imageSrc, title) {
@@ -1095,72 +1521,37 @@
             photoTitle.textContent = title || 'просмотр фото';
             photoViewer.classList.add('show');
         };
-        
-        closePhoto.addEventListener('click', () => {
-            photoViewer.classList.remove('show');
-            fullscreenPhoto.src = '#';
-        });
-        
-        downloadPhoto.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.href = fullscreenPhoto.src;
-            link.download = 'расписание.jpg';
-            link.click();
-        });
-        
-        fullscreenPhoto.addEventListener('click', () => {
-            photoViewer.classList.remove('show');
-            fullscreenPhoto.src = '#';
-        });
+        closePhoto.addEventListener('click', () => { photoViewer.classList.remove('show'); fullscreenPhoto.src = '#'; });
+        downloadPhoto.addEventListener('click', () => { const link = document.createElement('a'); link.href = fullscreenPhoto.src; link.download = 'photo.jpg'; link.click(); });
+        fullscreenPhoto.addEventListener('click', () => { photoViewer.classList.remove('show'); fullscreenPhoto.src = '#'; });
         
         // ========== ЛАЙКИ ==========
         window.toggleLike = async function(postId, button) {
             try {
                 const postRef = db.collection('posts').doc(postId);
-                
-                // Получаем текущие лайки
                 const doc = await postRef.get();
                 if (!doc.exists) return;
-                
                 const post = doc.data();
                 const likes = post.likes || [];
                 const likedBy = post.likedBy || {};
-                
-                // Проверяем, лайкал ли этот пользователь
                 const userLiked = likedBy[userId] === true;
                 
                 if (userLiked) {
-                    // Убираем лайк
                     delete likedBy[userId];
                     const newLikes = likes.filter(id => id !== userId);
-                    
-                    await postRef.update({
-                        likes: newLikes,
-                        likedBy: likedBy
-                    });
-                    
-                    // Обновляем UI
+                    await postRef.update({ likes: newLikes, likedBy: likedBy });
                     button.classList.remove('liked');
                     button.querySelector('.like-count').textContent = newLikes.length;
                     button.querySelector('i').className = 'far fa-heart';
                 } else {
-                    // Ставим лайк
                     likedBy[userId] = true;
                     const newLikes = [...likes, userId];
-                    
-                    await postRef.update({
-                        likes: newLikes,
-                        likedBy: likedBy
-                    });
-                    
-                    // Обновляем UI
+                    await postRef.update({ likes: newLikes, likedBy: likedBy });
                     button.classList.add('liked');
                     button.querySelector('.like-count').textContent = newLikes.length;
                     button.querySelector('i').className = 'fas fa-heart';
                 }
-            } catch (error) {
-                console.error('Ошибка при лайке:', error);
-            }
+            } catch (error) { console.error('Ошибка при лайке:', error); }
         };
         
         // ========== ЗАКРЕПЛЕНИЕ ПОСТА ==========
@@ -1168,199 +1559,201 @@
             try {
                 const postRef = db.collection('posts').doc(postId);
                 const doc = await postRef.get();
-                
                 if (!doc.exists) return;
-                
-                const post = doc.data();
-                const newPinned = !post.pinned;
-                
-                // Если закрепляем, нужно открепить предыдущий
+                const newPinned = !doc.data().pinned;
                 if (newPinned) {
-                    // Ищем пост, который сейчас закреплен
                     const snapshot = await db.collection('posts').where('pinned', '==', true).get();
-                    const promises = [];
-                    
-                    snapshot.forEach(doc => {
-                        if (doc.id !== postId) {
-                            promises.push(doc.ref.update({ pinned: false }));
-                        }
-                    });
-                    
-                    await Promise.all(promises);
+                    await Promise.all(snapshot.docs.map(d => d.id !== postId ? d.ref.update({ pinned: false }) : null));
                 }
-                
-                // Обновляем текущий пост
-                await postRef.update({
-                    pinned: newPinned
-                });
-                
-                // Перезагружаем посты
+                await postRef.update({ pinned: newPinned });
                 loadPosts();
-                
-            } catch (error) {
-                console.error('Ошибка при закреплении:', error);
+            } catch (error) { console.error('Ошибка при закреплении:', error); }
+        };
+        
+        // ========== КОММЕНТАРИИ ==========
+        window.toggleComments = function(postId) {
+            openComments[postId] = !openComments[postId];
+            const commentsList = document.getElementById(`comments-${postId}`);
+            const toggleBtn = document.getElementById(`toggle-${postId}`);
+            if (commentsList) {
+                if (openComments[postId]) {
+                    commentsList.classList.add('open');
+                    toggleBtn.classList.add('open');
+                } else {
+                    commentsList.classList.remove('open');
+                    toggleBtn.classList.remove('open');
+                }
             }
         };
+        
+        window.addComment = async function(postId, inputId) {
+            const input = document.getElementById(inputId);
+            const text = input.value.trim();
+            if (!text) return;
+            
+            // Проверяем, есть ли данные пользователя
+            if (!userData) {
+                await ensureUserData();
+            }
+            
+            const comment = {
+                text: text,
+                author: userData.name,
+                userId: userId,
+                avatar: userData.avatar || null,
+                date: new Date().toISOString()
+            };
+            
+            input.value = '';
+            
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                await postRef.update({
+                    comments: firebase.firestore.FieldValue.arrayUnion(comment)
+                });
+                // Перезагружаем комментарии
+                loadComments(postId);
+            } catch (error) {
+                console.error('Ошибка при добавлении комментария:', error);
+            }
+        };
+        
+        window.deleteComment = async function(postId, commentIndex) {
+            if (!isAdmin) return;
+            
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const doc = await postRef.get();
+                if (!doc.exists) return;
+                
+                const comments = doc.data().comments || [];
+                comments.splice(commentIndex, 1);
+                
+                await postRef.update({ comments: comments });
+                loadComments(postId);
+            } catch (error) {
+                console.error('Ошибка при удалении комментария:', error);
+            }
+        };
+        
+        async function loadComments(postId) {
+            const commentsContainer = document.getElementById(`comments-${postId}`);
+            if (!commentsContainer) return;
+            
+            try {
+                const doc = await db.collection('posts').doc(postId).get();
+                if (!doc.exists) return;
+                
+                const comments = doc.data().comments || [];
+                
+                let html = '';
+                comments.forEach((comment, index) => {
+                    const date = new Date(comment.date);
+                    const timeStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    
+                    html += `
+                        <div class="comment">
+                            <div class="comment-avatar">
+                                ${comment.avatar ? `<img src="${comment.avatar}" alt="avatar">` : '<i class="fas fa-user"></i>'}
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.author}</span>
+                                    <span class="comment-time">${timeStr}</span>
+                                    ${isAdmin ? `<button class="comment-delete" onclick="deleteComment('${postId}', ${index})"><i class="fas fa-trash"></i></button>` : ''}
+                                </div>
+                                <div class="comment-text">${comment.text}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                if (comments.length === 0) {
+                    html = '<div style="color:#999; font-size:12px; padding:8px;">пока нет комментариев</div>';
+                }
+                
+                commentsContainer.innerHTML = html;
+            } catch (error) {
+                console.error('Ошибка загрузки комментариев:', error);
+            }
+        }
         
         // ========== ОТСЛЕЖИВАНИЕ ПРОСМОТРОВ ==========
         function setupViewTracking() {
             const posts = document.querySelectorAll('.post');
-            
-            // Очищаем старые таймеры
-            Object.keys(viewTimers).forEach(key => {
-                clearTimeout(viewTimers[key]);
-                delete viewTimers[key];
-            });
-            
+            Object.keys(viewTimers).forEach(key => { clearTimeout(viewTimers[key]); delete viewTimers[key]; });
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const post = entry.target;
                     const postId = post.id.replace('post-', '');
-                    
                     if (entry.isIntersecting) {
-                        // Пост появился в зоне видимости - запускаем таймер
                         if (!viewedPosts.has(postId) && !viewTimers[postId]) {
                             viewTimers[postId] = setTimeout(async () => {
-                                // Проверяем, виден ли пост всё еще
                                 const rect = post.getBoundingClientRect();
-                                const isStillVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                                
-                                if (isStillVisible && !viewedPosts.has(postId)) {
+                                if (rect.top < window.innerHeight && rect.bottom > 0 && !viewedPosts.has(postId)) {
                                     try {
                                         const postRef = db.collection('posts').doc(postId);
                                         const doc = await postRef.get();
-                                        
                                         if (doc.exists) {
-                                            const post = doc.data();
-                                            const currentViews = post.views || 0;
-                                            
-                                            await postRef.update({
-                                                views: currentViews + 1
-                                            });
-                                            
+                                            const currentViews = doc.data().views || 0;
+                                            await postRef.update({ views: currentViews + 1 });
                                             viewedPosts.add(postId);
                                             localStorage.setItem('viewedPosts7a', JSON.stringify([...viewedPosts]));
-                                            
                                             const viewsElement = post.querySelector('.views-count span');
-                                            if (viewsElement) {
-                                                viewsElement.textContent = currentViews + 1;
-                                            }
+                                            if (viewsElement) viewsElement.textContent = currentViews + 1;
                                         }
-                                    } catch (error) {
-                                        console.error('Ошибка при обновлении просмотров:', error);
-                                    }
+                                    } catch (error) { console.error('Ошибка при обновлении просмотров:', error); }
                                 }
                                 delete viewTimers[postId];
-                            }, 2000); // 2 секунды
+                            }, 2000);
                         }
                     } else {
-                        // Пост скрылся - отменяем таймер
-                        if (viewTimers[postId]) {
-                            clearTimeout(viewTimers[postId]);
-                            delete viewTimers[postId];
-                        }
+                        if (viewTimers[postId]) { clearTimeout(viewTimers[postId]); delete viewTimers[postId]; }
                     }
                 });
-            }, {
-                threshold: 0.3 // Пост виден хотя бы на 30%
-            });
-            
+            }, { threshold: 0.3 });
             posts.forEach(post => observer.observe(post));
         }
         
         // ========== РЕДАКТИРОВАНИЕ ПОСТА ==========
         window.editPost = function(postId) {
             editingPostId = postId;
-            
-            // Получаем данные поста
-            db.collection('posts').doc(postId).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const post = doc.data();
-                        editTitle.value = post.title || '';
-                        editText.value = post.content || '';
-                        
-                        if (post.imageBase64) {
-                            editCurrentImageSrc.src = post.imageBase64;
-                            editCurrentImage.style.display = 'block';
-                        } else {
-                            editCurrentImage.style.display = 'none';
-                        }
-                        
-                        editModal.classList.add('show');
-                    }
-                })
-                .catch(error => {
-                    alert('Ошибка загрузки поста: ' + error.message);
-                });
+            db.collection('posts').doc(postId).get().then(doc => {
+                if (doc.exists) {
+                    const post = doc.data();
+                    editTitle.value = post.title || '';
+                    editText.value = post.content || '';
+                    if (post.imageBase64) { editCurrentImageSrc.src = post.imageBase64; editCurrentImage.style.display = 'block'; } 
+                    else editCurrentImage.style.display = 'none';
+                    editModal.classList.add('show');
+                }
+            }).catch(error => alert('Ошибка загрузки поста: ' + error.message));
         };
         
-        // Предпросмотр нового фото при редактировании
         editImage.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    editPreview.src = e.target.result;
-                    editPreviewContainer.classList.add('show');
-                }
+                reader.onload = e => { editPreview.src = e.target.result; editPreviewContainer.classList.add('show'); };
                 reader.readAsDataURL(file);
-            } else {
-                editPreviewContainer.classList.remove('show');
-            }
+            } else editPreviewContainer.classList.remove('show');
         });
         
-        // Сохранение изменений
         saveEdit.addEventListener('click', async () => {
             if (!editingPostId) return;
-            
-            const title = editTitle.value;
-            const content = editText.value;
-            const imageFile = editImage.files[0];
-            
-            saveEdit.disabled = true;
-            saveEdit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> сохранение...';
-            showLoading(true);
-            
+            const title = editTitle.value, content = editText.value, imageFile = editImage.files[0];
+            saveEdit.disabled = true; saveEdit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> сохранение...'; showLoading(true);
             try {
-                const updateData = {
-                    title: title || 'РАСПИСАНИЕ',
-                    content: content || ''
-                };
-                
-                if (imageFile) {
-                    // Если загружено новое фото, конвертируем его
-                    updateData.imageBase64 = await imageToBase64(imageFile);
-                }
-                
+                const updateData = { title: title || 'РАСПИСАНИЕ', content: content || '' };
+                if (imageFile) updateData.imageBase64 = await imageToBase64(imageFile);
                 await db.collection('posts').doc(editingPostId).update(updateData);
-                
-                // Закрываем модалку и обновляем список
-                editModal.classList.remove('show');
-                editImage.value = '';
-                editPreviewContainer.classList.remove('show');
-                
-                if (currentTab === 'main') {
-                    loadMainTab();
-                }
-                
-            } catch (error) {
-                alert('Ошибка при сохранении: ' + error.message);
-            } finally {
-                saveEdit.disabled = false;
-                saveEdit.innerHTML = 'сохранить';
-                showLoading(false);
-                editingPostId = null;
+                editModal.classList.remove('show'); editImage.value = ''; editPreviewContainer.classList.remove('show');
+                if (currentTab === 'main') loadMainTab();
+            } catch (error) { alert('Ошибка при сохранении: ' + error.message); } finally {
+                saveEdit.disabled = false; saveEdit.innerHTML = 'сохранить'; showLoading(false); editingPostId = null;
             }
         });
-        
-        // Отмена редактирования
-        cancelEdit.addEventListener('click', () => {
-            editModal.classList.remove('show');
-            editImage.value = '';
-            editPreviewContainer.classList.remove('show');
-            editingPostId = null;
-        });
+        cancelEdit.addEventListener('click', () => { editModal.classList.remove('show'); editImage.value = ''; editPreviewContainer.classList.remove('show'); editingPostId = null; });
         
         // ========== КОНВЕРТАЦИЯ ФОТО В BASE64 ==========
         function imageToBase64(file) {
@@ -1372,93 +1765,38 @@
                     img.src = reader.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        
+                        let width = img.width, height = img.height;
                         const maxSize = 1200;
                         if (width > maxSize || height > maxSize) {
-                            if (width > height) {
-                                height = Math.round(height * maxSize / width);
-                                width = maxSize;
-                            } else {
-                                width = Math.round(width * maxSize / height);
-                                height = maxSize;
-                            }
+                            if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+                            else { width = Math.round(width * maxSize / height); height = maxSize; }
                         }
-                        
-                        canvas.width = width;
-                        canvas.height = height;
+                        canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
-                        const base64 = canvas.toDataURL('image/jpeg', 0.8);
-                        resolve(base64);
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
                     };
                 };
-                reader.onerror = error => reject(error);
+                reader.onerror = reject;
             });
         }
         
-        // ========== ЗАГРУЗКА ПРИ СТАРТЕ ==========
-        window.addEventListener('DOMContentLoaded', () => {
-            loadMainTab();
-            updateTimer(); // Запускаем таймер сразу
-        });
+        window.addEventListener('DOMContentLoaded', () => { loadMainTab(); updateTimer(); });
         
-        // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
-        tabMainBtn.addEventListener('click', () => {
-            currentTab = 'main';
-            tabMainBtn.classList.add('active');
-            tabUsefulBtn.classList.remove('active');
-            loadMainTab();
-        });
-        
-        tabUsefulBtn.addEventListener('click', () => {
-            currentTab = 'useful';
-            tabUsefulBtn.classList.add('active');
-            tabMainBtn.classList.remove('active');
-            loadUsefulTab();
-        });
+        tabMainBtn.addEventListener('click', () => { currentTab = 'main'; tabMainBtn.classList.add('active'); tabUsefulBtn.classList.remove('active'); loadMainTab(); });
+        tabUsefulBtn.addEventListener('click', () => { currentTab = 'useful'; tabUsefulBtn.classList.add('active'); tabMainBtn.classList.remove('active'); loadUsefulTab(); });
         
         // ========== УДАЛЕНИЕ ==========
-        function showDeleteConfirm(id, type) {
-            itemToDelete = id;
-            itemType = type;
-            confirmDelete.classList.add('show');
-        }
-        
-        cancelDelete.addEventListener('click', () => {
-            confirmDelete.classList.remove('show');
-            itemToDelete = null;
-            itemType = null;
-        });
-        
-        confirmDeleteBtn.addEventListener('click', () => {
-            if (itemToDelete && itemType) {
-                deleteItem(itemToDelete, itemType);
-            }
-            confirmDelete.classList.remove('show');
-        });
-        
+        function showDeleteConfirm(id, type) { itemToDelete = id; itemType = type; confirmDelete.classList.add('show'); }
+        cancelDelete.addEventListener('click', () => { confirmDelete.classList.remove('show'); itemToDelete = null; itemType = null; });
+        confirmDeleteBtn.addEventListener('click', () => { if (itemToDelete && itemType) deleteItem(itemToDelete, itemType); confirmDelete.classList.remove('show'); });
         async function deleteItem(id, type) {
             showLoading(true);
             try {
-                if (type === 'post') {
-                    await db.collection('posts').doc(id).delete();
-                }
-                
-                if (currentTab === 'main') {
-                    loadMainTab();
-                } else {
-                    loadUsefulTab();
-                }
-            } catch (error) {
-                alert('Ошибка при удалении: ' + error.message);
-            } finally {
-                showLoading(false);
-                itemToDelete = null;
-                itemType = null;
-            }
+                if (type === 'post') await db.collection('posts').doc(id).delete();
+                else if (type === 'hw') await db.collection('homework').doc(id).delete();
+                if (currentTab === 'main') loadMainTab(); else loadUsefulTab();
+            } catch (error) { alert('Ошибка при удалении: ' + error.message); } finally { showLoading(false); itemToDelete = null; itemType = null; }
         }
         
         // ========== ГЛАВНАЯ ==========
@@ -1468,43 +1806,25 @@
                     <div class="admin-panel">
                         <h3><i class="fas fa-camera"></i> загрузить расписание</h3>
                         <input type="text" id="postTitle" class="admin-input" placeholder="название (например, РАСПИСАНИЕ НА ПОНЕДЕЛЬНИК)">
-                        
-                        <div style="border: 1px solid #eee; padding: 12px; margin-bottom: 12px;">
-                            <label style="font-size: 13px; color: #666; margin-bottom: 8px; display: block;">
-                                <i class="fas fa-image"></i> фото расписания
-                            </label>
+                        <div style="border:1px solid #eee; padding:12px; margin-bottom:12px;">
+                            <label style="font-size:13px; color:#666; margin-bottom:8px; display:block;"><i class="fas fa-image"></i> фото расписания</label>
                             <input type="file" id="postImage" class="admin-file" accept="image/*">
                             <div class="image-size-warning">фото будет уменьшено для экономии места</div>
                         </div>
-                        
-                        <div id="imagePreviewContainer" class="image-preview-container">
-                            <img id="imagePreview" class="image-preview" src="#" alt="preview" onclick="openPhoto(this.src, 'предпросмотр')">
-                        </div>
-                        
+                        <div id="imagePreviewContainer" class="image-preview-container"><img id="imagePreview" class="image-preview" src="#" alt="preview" onclick="openPhoto(this.src, 'предпросмотр')"></div>
                         <textarea id="postText" class="admin-input" rows="2" placeholder="комментарий (необязательно)"></textarea>
-                        
-                        <button class="admin-btn" id="publishPost">
-                            <i class="fas fa-cloud-upload-alt"></i> опубликовать
-                        </button>
+                        <button class="admin-btn" id="publishPost"><i class="fas fa-cloud-upload-alt"></i> опубликовать</button>
                     </div>
                     <div id="postsList">${showSkeletons('posts')}</div>
                 `;
                 contentDiv.innerHTML = html;
-                
                 document.getElementById('postImage').addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
+                    if (e.target.files[0]) {
                         const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const preview = document.getElementById('imagePreview');
-                            const container = document.getElementById('imagePreviewContainer');
-                            preview.src = e.target.result;
-                            container.classList.add('show');
-                        }
-                        reader.readAsDataURL(file);
+                        reader.onload = e => { document.getElementById('imagePreview').src = e.target.result; document.getElementById('imagePreviewContainer').classList.add('show'); };
+                        reader.readAsDataURL(e.target.files[0]);
                     }
                 });
-                
                 loadPosts();
                 document.getElementById('publishPost').addEventListener('click', publishPost);
             } else {
@@ -1513,251 +1833,246 @@
             }
         }
         
-        // Загрузка постов
+        async function publishPost() {
+            const title = document.getElementById('postTitle').value, content = document.getElementById('postText').value, imageFile = document.getElementById('postImage').files[0];
+            const publishBtn = document.getElementById('publishPost');
+            publishBtn.disabled = true; publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> обработка фото...'; showLoading(true);
+            try {
+                let imageBase64 = '';
+                if (imageFile) imageBase64 = await imageToBase64(imageFile);
+                await db.collection('posts').add({ 
+                    title: title || 'РАСПИСАНИЕ', 
+                    content: content || '', 
+                    imageBase64, 
+                    date: new Date().toISOString(), 
+                    likes: [], 
+                    likedBy: {}, 
+                    views: 0, 
+                    pinned: false,
+                    comments: [] // Новое поле для комментариев
+                });
+                document.getElementById('postTitle').value = ''; document.getElementById('postText').value = ''; document.getElementById('postImage').value = ''; document.getElementById('imagePreviewContainer').classList.remove('show');
+                loadPosts();
+            } catch (error) { alert('Ошибка: ' + error.message); } finally { publishBtn.disabled = false; publishBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> опубликовать'; showLoading(false); }
+        }
+        
         function loadPosts() {
             const postsList = document.getElementById('postsList');
             if (!postsList) return;
-            
-            db.collection('posts').get()
-                .then((snapshot) => {
-                    if (snapshot.empty) {
-                        postsList.innerHTML = '<div class="empty-state">пока нет расписания</div>';
-                        return;
-                    }
+            db.collection('posts').get().then(snapshot => {
+                if (snapshot.empty) { postsList.innerHTML = '<div class="empty-state">пока нет расписания</div>'; return; }
+                let posts = [];
+                snapshot.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
+                posts.sort((a,b) => { if (a.pinned && !b.pinned) return -1; if (!a.pinned && b.pinned) return 1; return new Date(b.date) - new Date(a.date); });
+                let html = '';
+                posts.forEach(post => {
+                    const likes = post.likes || [], likedBy = post.likedBy || {}, userLiked = likedBy[userId] === true, views = post.views || 0;
+                    const commentsCount = (post.comments || []).length;
+                    // Генерируем уникальный ID для инпута комментария
+                    const commentInputId = `comment-input-${post.id}`;
                     
-                    // Сортируем: сначала закрепленные, потом по дате
-                    let posts = [];
-                    snapshot.forEach(doc => {
-                        posts.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-                    
-                    // Сортировка: pinned сначала, потом по дате (новые сверху)
-                    posts.sort((a, b) => {
-                        if (a.pinned && !b.pinned) return -1;
-                        if (!a.pinned && b.pinned) return 1;
-                        return new Date(b.date) - new Date(a.date);
-                    });
-                    
-                    let html = '';
-                    posts.forEach(post => {
-                        // Для лайков
-                        const likes = post.likes || [];
-                        const likedBy = post.likedBy || {};
-                        const userLiked = likedBy[userId] === true;
-                        const likesCount = likes.length;
-                        
-                        // Для просмотров
-                        const views = post.views || 0;
-                        
-                        html += `
-                            <div class="post ${post.pinned ? 'pinned' : ''}" id="post-${post.id}">
-                                <div class="post-header">
-                                    <div class="post-title-wrapper">
-                                        ${post.pinned ? '<i class="fas fa-thumbtack pin-icon"></i>' : ''}
-                                        <div class="post-title">${post.title || 'РАСПИСАНИЕ'}</div>
-                                    </div>
-                                    ${isAdmin ? `
-                                        <div class="post-actions">
-                                            <button class="post-action-btn pin ${post.pinned ? 'active' : ''}" onclick="togglePin('${post.id}', this)">
-                                                <i class="fas fa-thumbtack"></i>
-                                            </button>
-                                            <button class="post-action-btn edit" onclick="editPost('${post.id}')">
-                                                <i class="fas fa-pen"></i>
-                                            </button>
-                                            <button class="post-action-btn delete" onclick="deletePost('${post.id}')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    ` : ''}
+                    html += `
+                        <div class="post ${post.pinned ? 'pinned' : ''}" id="post-${post.id}">
+                            <div class="post-header">
+                                <div class="post-title-wrapper">
+                                    ${post.pinned ? '<i class="fas fa-thumbtack pin-icon"></i>' : ''}
+                                    <div class="post-title">${post.title || 'РАСПИСАНИЕ'}</div>
                                 </div>
-                                ${post.imageBase64 ? `<img src="${post.imageBase64}" class="post-image" alt="расписание" onclick="openPhoto('${post.imageBase64}', '${post.title || 'расписание'}')">` : ''}
-                                ${post.content ? `<div class="post-content">${post.content}</div>` : ''}
-                                
-                                <div class="post-footer">
-                                    <div class="post-stats">
-                                        <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', this)">
-                                            <i class="fa${userLiked ? 's' : 'r'} fa-heart"></i>
-                                            <span class="like-count">${likesCount}</span>
-                                        </button>
-                                        <div class="views-count">
-                                            <i class="far fa-eye"></i>
-                                            <span>${views}</span>
-                                        </div>
+                                ${isAdmin ? `
+                                    <div class="post-actions">
+                                        <button class="post-action-btn pin ${post.pinned ? 'active' : ''}" onclick="togglePin('${post.id}', this)"><i class="fas fa-thumbtack"></i></button>
+                                        <button class="post-action-btn edit" onclick="editPost('${post.id}')"><i class="fas fa-pen"></i></button>
+                                        <button class="post-action-btn delete" onclick="deletePost('${post.id}')"><i class="fas fa-trash"></i></button>
                                     </div>
-                                    <div class="post-date">${formatDate(post.date)}</div>
+                                ` : ''}
+                            </div>
+                            ${post.imageBase64 ? `<img src="${post.imageBase64}" class="post-image" alt="расписание" onclick="openPhoto('${post.imageBase64}', '${post.title || 'расписание'}')">` : ''}
+                            ${post.content ? `<div class="post-content">${post.content}</div>` : ''}
+                            
+                            <div class="post-footer">
+                                <div class="post-stats">
+                                    <button class="like-button ${userLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', this)">
+                                        <i class="fa${userLiked ? 's' : 'r'} fa-heart"></i>
+                                        <span class="like-count">${likes.length}</span>
+                                    </button>
+                                    <div class="views-count">
+                                        <i class="far fa-eye"></i>
+                                        <span>${views}</span>
+                                    </div>
+                                    <button class="post-action-btn" onclick="toggleComments('${post.id}')" id="toggle-${post.id}">
+                                        <i class="fas fa-comment"></i> ${commentsCount}
+                                    </button>
+                                </div>
+                                <div class="post-date">${formatDate(post.date)}</div>
+                            </div>
+                            
+                            <!-- Комментарии -->
+                            <div class="comments-section">
+                                <div class="comments-list" id="comments-${post.id}">
+                                    <!-- Комментарии загружаются динамически -->
+                                </div>
+                                
+                                <!-- Форма добавления комментария -->
+                                <div class="comment-form">
+                                    <div class="comment-input-wrapper">
+                                        <input type="text" id="${commentInputId}" class="comment-input" placeholder="написать комментарий..." onkeypress="if(event.key==='Enter') addComment('${post.id}', '${commentInputId}')">
+                                    </div>
+                                    <button class="comment-submit" onclick="addComment('${post.id}', '${commentInputId}')">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
                                 </div>
                             </div>
-                        `;
-                    });
-                    
-                    postsList.innerHTML = html;
-                    
-                    // Запускаем отслеживание просмотров после отрисовки постов
-                    setupViewTracking();
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    postsList.innerHTML = '<div class="empty-state">ошибка загрузки</div>';
+                        </div>
+                    `;
                 });
+                postsList.innerHTML = html;
+                
+                // Загружаем комментарии для каждого поста
+                posts.forEach(post => {
+                    loadComments(post.id);
+                });
+                
+                setupViewTracking();
+            }).catch(error => { console.error('Ошибка:', error); postsList.innerHTML = '<div class="empty-state">ошибка загрузки</div>'; });
         }
         
-        // Публикация поста
-        async function publishPost() {
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postText').value;
-            const imageFile = document.getElementById('postImage').files[0];
-            
-            const publishBtn = document.getElementById('publishPost');
-            publishBtn.disabled = true;
-            publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> обработка фото...';
-            
-            showLoading(true);
-            
+        window.deletePost = function(postId) { showDeleteConfirm(postId, 'post'); };
+        
+        // ========== ПОЛЕЗНО (ВПР + ДЗ) ==========
+        function loadUsefulTab() {
+            if (isAdmin) {
+                contentDiv.innerHTML = `
+                    <div class="admin-hw-panel">
+                        <h3><i class="fas fa-pencil-alt"></i> добавить домашнее задание</h3>
+                        <input type="text" id="hwTitle" class="admin-input" placeholder="предмет / название (необязательно)">
+                        <div style="border:1px solid #eee; padding:12px; margin-bottom:12px;">
+                            <label style="font-size:13px; color:#666;"><i class="fas fa-image"></i> фото задания</label>
+                            <input type="file" id="hwImage" class="admin-file" accept="image/*">
+                        </div>
+                        <div id="hwImagePreviewContainer" class="image-preview-container"><img id="hwImagePreview" class="image-preview" src="#" alt="preview" onclick="openPhoto(this.src, 'предпросмотр дз')"></div>
+                        <textarea id="hwText" class="admin-input" rows="3" placeholder="текст домашнего задания (если нет фото)"></textarea>
+                        <button class="admin-btn" id="publishHw"><i class="fas fa-save"></i> сохранить задание</button>
+                    </div>
+                    <div class="section-title"><i class="fas fa-book"></i> Домашнее задание</div>
+                    <div id="hwList">${showSkeletons('vpr')}</div>
+                    <div class="section-title"><i class="fas fa-file-pdf"></i> ВПР</div>
+                    <div id="vprList"></div>
+                `;
+                document.getElementById('hwImage').addEventListener('change', function(e) {
+                    if (e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = e => { document.getElementById('hwImagePreview').src = e.target.result; document.getElementById('hwImagePreviewContainer').classList.add('show'); };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                document.getElementById('publishHw').addEventListener('click', publishHomework);
+                loadHomework();
+                renderVprList();
+            } else {
+                contentDiv.innerHTML = `
+                    <div class="section-title"><i class="fas fa-book"></i> Домашнее задание</div>
+                    <div id="hwList">${showSkeletons('vpr')}</div>
+                    <div class="section-title"><i class="fas fa-file-pdf"></i> ВПР</div>
+                    <div id="vprList"></div>
+                `;
+                loadHomework();
+                renderVprList();
+            }
+        }
+        
+        async function publishHomework() {
+            const title = document.getElementById('hwTitle').value;
+            const text = document.getElementById('hwText').value;
+            const imageFile = document.getElementById('hwImage').files[0];
+            const btn = document.getElementById('publishHw');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> сохранение...'; showLoading(true);
             try {
                 let imageBase64 = '';
-                
-                if (imageFile) {
-                    imageBase64 = await imageToBase64(imageFile);
-                }
-                
-                await db.collection('posts').add({
-                    title: title || 'РАСПИСАНИЕ',
-                    content: content || '',
+                if (imageFile) imageBase64 = await imageToBase64(imageFile);
+                await db.collection('homework').add({
+                    title: title || 'Домашнее задание',
+                    text: text || '',
                     imageBase64: imageBase64,
-                    date: new Date().toISOString(),
-                    likes: [],
-                    likedBy: {},
-                    views: 0,
-                    pinned: false
+                    date: new Date().toISOString()
                 });
-                
-                document.getElementById('postTitle').value = '';
-                document.getElementById('postText').value = '';
-                document.getElementById('postImage').value = '';
-                document.getElementById('imagePreviewContainer').classList.remove('show');
-                
-                loadPosts();
-                
-            } catch (error) {
-                alert('Ошибка: ' + error.message);
-            } finally {
-                publishBtn.disabled = false;
-                publishBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> опубликовать';
-                showLoading(false);
-            }
+                document.getElementById('hwTitle').value = ''; document.getElementById('hwText').value = ''; document.getElementById('hwImage').value = ''; document.getElementById('hwImagePreviewContainer').classList.remove('show');
+                loadHomework();
+            } catch (error) { alert('Ошибка: ' + error.message); } finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> сохранить задание'; showLoading(false); }
         }
         
-        // Функция удаления поста (глобальная)
-        window.deletePost = function(postId) {
-            showDeleteConfirm(postId, 'post');
-        };
+        function loadHomework() {
+            const hwList = document.getElementById('hwList');
+            if (!hwList) return;
+            db.collection('homework').orderBy('date', 'desc').get().then(snapshot => {
+                if (snapshot.empty) { hwList.innerHTML = '<div class="empty-state">домашнего задания пока нет</div>'; return; }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const hw = doc.data();
+                    html += `
+                        <div class="hw-item">
+                            <div class="hw-header">
+                                <i class="fas fa-book-open"></i>
+                                <h3>${hw.title || 'Домашнее задание'}</h3>
+                                <div class="hw-date">${formatDate(hw.date)}</div>
+                                ${isAdmin ? `<button class="post-action-btn delete" onclick="deleteHomework('${doc.id}')" style="margin-left:auto;"><i class="fas fa-trash"></i></button>` : ''}
+                            </div>
+                            ${hw.text ? `<div class="hw-text">${hw.text}</div>` : ''}
+                            ${hw.imageBase64 ? `<img src="${hw.imageBase64}" class="hw-image" alt="hw" onclick="openPhoto('${hw.imageBase64}', 'дз')">` : ''}
+                        </div>
+                    `;
+                });
+                hwList.innerHTML = html;
+            }).catch(err => { hwList.innerHTML = '<div class="empty-state">ошибка загрузки</div>'; });
+        }
         
-        // ========== ПОЛЕЗНО (ВПР) ==========
-        function loadUsefulTab() {
-            const vprFiles = getVprList();
-            
-            contentDiv.innerHTML = `<div id="vprList">${showSkeletons('vpr')}</div>`;
-            
+        window.deleteHomework = function(id) { showDeleteConfirm(id, 'hw'); };
+        
+        function renderVprList() {
             const vprList = document.getElementById('vprList');
-            
-            if (vprFiles.length === 0) {
-                vprList.innerHTML = '<div class="empty-state">нет файлов ВПР</div>';
-                return;
-            }
-            
+            const files = getVprList();
             let html = '';
-            vprFiles.forEach((vpr) => {
+            files.forEach(vpr => {
                 html += `
                     <div class="vpr-item">
-                        <div class="vpr-info">
-                            <i class="fas fa-file-pdf"></i>
-                            <div>
-                                <div class="vpr-name">${vpr.name}</div>
-                                <div class="vpr-date">${formatDate(vpr.date)}</div>
-                                <div style="font-size: 11px; color: #aaa;">${vpr.fileName}</div>
-                            </div>
-                        </div>
-                        <div class="vpr-actions">
-                            <button class="vpr-btn" onclick="openPdf('${vpr.fileName}', '${vpr.name}')">
-                                <i class="fas fa-eye"></i> открыть
-                            </button>
-                            <a href="vpr/${vpr.fileName}" download class="vpr-btn">
-                                <i class="fas fa-download"></i>
-                            </a>
-                        </div>
+                        <div class="vpr-info"><i class="fas fa-file-pdf"></i><div><div class="vpr-name">${vpr.name}</div><div class="vpr-date">${formatDate(vpr.date)}</div><div style="font-size:11px;color:#aaa;">${vpr.fileName}</div></div></div>
+                        <div class="vpr-actions"><button class="vpr-btn" onclick="openPdf('${vpr.fileName}', '${vpr.name}')"><i class="fas fa-eye"></i> открыть</button><a href="vpr/${vpr.fileName}" download class="vpr-btn"><i class="fas fa-download"></i></a></div>
                     </div>
                 `;
             });
-            
             vprList.innerHTML = html;
         }
         
         // ========== СЕКРЕТНЫЙ ВХОД ==========
         logo.addEventListener('click', () => {
             clickCount++;
-            
             if (clickTimer) clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => {
-                clickCount = 0;
-            }, 3000);
-            
+            clickTimer = setTimeout(() => { clickCount = 0; }, 3000);
             if (clickCount >= 10) {
-                clickCount = 0;
-                clearTimeout(clickTimer);
-                modal.classList.add('active');
-                document.getElementById('loginName').focus();
+                clickCount = 0; clearTimeout(clickTimer);
+                modal.classList.add('active'); document.getElementById('loginName').focus();
             }
         });
-        
-        document.getElementById('closeModal').addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-        
+        document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('active'));
         document.getElementById('checkLogin').addEventListener('click', () => {
             const name = document.getElementById('loginName').value.trim().toLowerCase();
             const pass = document.getElementById('loginPass').value;
-            
             if (name === 'булат' && pass === '0515') {
-                isAdmin = true;
-                modal.classList.remove('active');
-                
-                if (currentTab === 'main') {
-                    loadMainTab();
-                } else {
-                    loadUsefulTab();
-                }
-                
-                document.getElementById('loginName').value = '';
-                document.getElementById('loginPass').value = '';
-            } else {
-                alert('неверный логин или пароль');
-            }
+                isAdmin = true; modal.classList.remove('active');
+                if (currentTab === 'main') loadMainTab(); else loadUsefulTab();
+                document.getElementById('loginName').value = ''; document.getElementById('loginPass').value = '';
+            } else alert('неверный логин или пароль');
         });
         
-        // Закрытие модалок по Escape
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                modal.classList.remove('active');
-                confirmDelete.classList.remove('show');
-                pdfViewer.classList.remove('show');
-                photoViewer.classList.remove('show');
-                editModal.classList.remove('show');
-                pdfFrame.src = '';
-                fullscreenPhoto.src = '#';
+                modal.classList.remove('active'); confirmDelete.classList.remove('show'); pdfViewer.classList.remove('show'); photoViewer.classList.remove('show'); editModal.classList.remove('show'); avatarModal.classList.remove('show');
+                pdfFrame.src = ''; fullscreenPhoto.src = '#';
             }
         });
         
-        // ========== ФОРМАТ ДАТЫ ==========
         function formatDate(isoString) {
             if (!isoString) return '';
-            const date = new Date(isoString);
-            return date.toLocaleDateString('ru-RU', {
-                day: 'numeric',
-                month: 'long'
-            }).replace(' года', '');
+            return new Date(isoString).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }).replace(' года', '');
         }
     </script>
 </body>
